@@ -44,13 +44,27 @@ Laisse la fenêtre du terminal ouverte : la fermer arrête le serveur.
 > [!CAUTION]
 > Ton token, c'est **la clé de ton compte**. Quiconque l'a peut tout faire à ta place. Ne le colle **nulle part ailleurs** que dans ce tableau de bord, sur ton propre PC.
 
-1. Ouvre **https://discord.com/app** dans ton navigateur (Chrome, Edge, Firefox…) et connecte-toi.
-2. Appuie sur **F12** pour ouvrir les outils de développement, puis va dans l'onglet **Réseau** (Network).
-3. Dans le champ de filtre, tape `api`, puis clique sur un salon ou un serveur pour générer des requêtes.
-4. Clique sur une requête (par exemple `messages` ou `science`), puis cherche **En-têtes de requête** → **`authorization`**.
-5. Copie la valeur : c'est ton token.
+### Méthode 1 : la console (la plus rapide)
 
-> Le tableau de bord propose aussi une commande à coller dans la console (`JSON.parse(localStorage.getItem("token"))`). Selon la version de Discord, elle peut ne pas fonctionner. La méthode « Réseau » ci-dessus marche à tous les coups.
+1. Ouvre Discord **dans le navigateur** (**https://discord.com/app**), pas dans l'appli de bureau, et connecte-toi.
+2. Appuie sur **Ctrl + Maj + I** (ou **F12**), puis va dans l'onglet **Console**.
+3. Colle cette commande, puis appuie sur Entrée :
+   ```js
+   (JSON.parse(localStorage.getItem("token"))).replace(/"/g, "")
+   ```
+4. Copie le texte affiché (sans les guillemets) : c'est ton token.
+5. Colle-le dans la carte **« Token »** du tableau de bord, puis clique sur **Valider**. Il est enregistré automatiquement : **pas besoin de fichier `.env`**.
+
+> Si la console affiche un avertissement « Self-XSS » et refuse de coller, tape d'abord `allow pasting` puis Entrée, et recommence. Ne colle **jamais** dans cette console du code qu'on t'a envoyé.
+
+### Méthode 2 : l'onglet Réseau (si la méthode 1 renvoie une erreur)
+
+Selon la version de Discord, `localStorage` peut être désactivé dans la console et la commande renvoie une erreur. Dans ce cas :
+
+1. Toujours sur **https://discord.com/app**, ouvre les outils de développement et va dans l'onglet **Réseau** (Network).
+2. Dans le champ de filtre, tape `api`, puis clique sur un salon ou un serveur pour générer des requêtes.
+3. Clique sur une requête (par exemple `messages` ou `science`), puis cherche **En-têtes de requête** → **`authorization`**.
+4. Copie la valeur et colle-la dans le tableau de bord.
 
 ## 5. Utiliser le tableau de bord
 

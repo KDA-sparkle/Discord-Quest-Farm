@@ -44,13 +44,27 @@ Keep the terminal window open: closing it stops the server.
 > [!CAUTION]
 > Your token is **the key to your account**. Anyone who has it can do anything as you. Never paste it **anywhere other** than this dashboard, on your own PC.
 
-1. Open **https://discord.com/app** in your browser (Chrome, Edge, Firefox…) and log in.
-2. Press **F12** to open the developer tools, then go to the **Network** tab.
-3. Type `api` in the filter box, then click a channel or a server to trigger some requests.
-4. Click a request (for example `messages` or `science`), then look under **Request Headers** → **`authorization`**.
-5. Copy that value: it is your token.
+### Method 1: the console (fastest)
 
-> The dashboard also shows a command to paste in the console (`JSON.parse(localStorage.getItem("token"))`). Depending on the Discord version it may not work. The "Network" method above always does.
+1. Open Discord **in your browser** (**https://discord.com/app**), not the desktop app, and log in.
+2. Press **Ctrl + Shift + I** (or **F12**), then go to the **Console** tab.
+3. Paste this command and press Enter:
+   ```js
+   (JSON.parse(localStorage.getItem("token"))).replace(/"/g, "")
+   ```
+4. Copy the text it prints (without the quotes): that is your token.
+5. Paste it in the dashboard's **"Token"** card and click **Save**. It is saved automatically: **no `.env` file needed**.
+
+> If the console shows a "Self-XSS" warning and blocks pasting, type `allow pasting`, press Enter, and try again. **Never** paste code someone sent you into that console.
+
+### Method 2: the Network tab (if method 1 throws an error)
+
+Depending on the Discord version, `localStorage` may be disabled in the console and the command throws an error. In that case:
+
+1. Still on **https://discord.com/app**, open the developer tools and go to the **Network** tab.
+2. Type `api` in the filter box, then click a channel or a server to trigger some requests.
+3. Click a request (for example `messages` or `science`), then look under **Request Headers** → **`authorization`**.
+4. Copy that value and paste it into the dashboard.
 
 ## 5. Use the dashboard
 

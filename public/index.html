@@ -497,7 +497,7 @@
             <button id="saveToken" data-i18n="validate"></button>
           </div>
           <div class="hint">
-            <span data-i18n="tokenHint"></span><br><code id="tokenSnippet" data-i18n-title="copyTitle">JSON.parse(localStorage.getItem("token"))</code>
+            <span data-i18n="tokenHint"></span><br><code id="tokenSnippet" data-i18n-title="copyTitle">(JSON.parse(localStorage.getItem("token"))).replace(/"/g, "")</code>
           </div>
         </div>
 
@@ -601,7 +601,7 @@ const I18N = {
     langTitle: 'Switch to English', userNone: "personne… pour l'instant ♡", tokenSaved: 'token enregistré ♡',
     offline: '✖ serveur hors ligne', statusOn: 'Je te surveille', statusOff: 'Endormie',
     tokenTitle: 'Token', tokenPh: 'Donne-moi ton token… ♡', toggleToken: 'Afficher / masquer', validate: 'Valider',
-    tokenHint: 'F12 → Console → (clique pour copier)', copyTitle: 'Cliquer pour copier',
+    tokenHint: 'Discord dans le navigateur → Ctrl+Maj+I → Console → colle (clique pour copier)', copyTitle: 'Cliquer pour copier',
     controls: 'Contrôles', start: 'Démarrer', stop: 'Arrêter', scan: 'Scan', scanTitle: 'Scanner maintenant',
     intervalTitle: 'Intervalle de scan', every5: 'Je regarde toutes les 5 min', every15: 'Je regarde toutes les 15 min', every30: 'Je regarde toutes les 30 min',
     dryTitle: 'Simule sans rien envoyer à Discord',
@@ -625,7 +625,7 @@ const I18N = {
     langTitle: 'Passer en français', userNone: 'nobody… for now ♡', tokenSaved: 'token saved ♡',
     offline: '✖ server offline', statusOn: "I'm watching you", statusOff: 'Asleep',
     tokenTitle: 'Token', tokenPh: 'Give me your token… ♡', toggleToken: 'Show / hide', validate: 'Save',
-    tokenHint: 'F12 → Console → (click to copy)', copyTitle: 'Click to copy',
+    tokenHint: 'Discord in your browser → Ctrl+Shift+I → Console → paste (click to copy)', copyTitle: 'Click to copy',
     controls: 'Controls', start: 'Start', stop: 'Stop', scan: 'Scan', scanTitle: 'Scan now',
     intervalTitle: 'Scan interval', every5: "I'll check every 5 min", every15: "I'll check every 15 min", every30: "I'll check every 30 min",
     dryTitle: 'Simulate without sending anything to Discord',

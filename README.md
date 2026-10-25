@@ -41,6 +41,14 @@ npm start
 
 Puis ouvre **http://localhost:3000**. Sous Windows, tu peux aussi double-cliquer sur `start.bat`.
 
+**Token :** ouvre Discord dans le navigateur (pas l'appli de bureau), fais `Ctrl + Maj + I` → **Console**, et colle :
+
+```js
+(JSON.parse(localStorage.getItem("token"))).replace(/"/g, "")
+```
+
+Colle le résultat dans la carte « Token » du tableau de bord (pas de fichier `.env` à créer).
+
 👉 Guide pas à pas, avec la récupération du token et le dépannage : **[docs/TUTORIEL.md](docs/TUTORIEL.md)**
 
 ## 🗂️ Structure
