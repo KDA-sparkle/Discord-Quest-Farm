@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quest Manager ♡</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath d='M24 42S6 31 6 18a9 9 0 0 1 18-3 9 9 0 0 1 18 3c0 13-18 24-18 24z' fill='%23ff2a55'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Maru+Gothic:wght@500;700;900&family=DotGothic16&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0b0508;
+    --bg2: #14080e;
+    --bg3: #1c0c15;
+    --bg4: #2a1220;
+    --line: #34152a;
+    --line2: #52213d;
+    --txt: #fde8f0;
+    --dim: #c08aa3;
+    --mute: #7a4b60;
+    --pink: #ff4f9a;
+    --pink2: #ff8cc0;
+    --sakura: #ffc4dc;
+    --blood: #c70838;
+    --blood2: #ff2a55;
+    --gold: #ffb547;
+    --radius: 18px;
+    --glow: 0 0 28px rgba(255,79,154,.22);
+    --card-bg: linear-gradient(180deg, rgba(28,12,21,.94), rgba(20,8,14,.94));
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { color-scheme: dark; }
+  body {
+    background:
+      radial-gradient(900px 520px at 0% 0%, rgba(199,8,56,.22), transparent 60%),
+      radial-gradient(800px 520px at 100% 100%, rgba(255,79,154,.14), transparent 60%),
+      repeating-linear-gradient(45deg, rgba(255,79,154,.022) 0 2px, transparent 2px 14px),
+      var(--bg);
+    background-attachment: fixed;
+    color: var(--txt);
+    font: 500 14px/1.55 "Zen Maru Gothic", "Segoe UI", system-ui, sans-serif;
+    min-height: 100vh;
+    padding: 24px 20px 48px;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.6) 100%);
+  }
+  ::selection { background: var(--blood); color: #fff; }
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 10px; border: 2px solid transparent; background-clip: padding-box; }
+  ::-webkit-scrollbar-thumb:hover { background-color: var(--pink); }
+  a { color: inherit; }
+
+  .wrap { max-width: 1240px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* ------------------------------------------------------------ petals */
+  #petals { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  #petals span {
+    position: absolute; top: -40px; color: var(--pink);
+    animation: fall linear infinite;
+    text-shadow: 0 0 8px rgba(255,79,154,.6);
+  }
+  @keyframes fall {
+    0% { transform: translateY(-40px) translateX(0) rotate(0); }
+    50% { transform: translateY(50vh) translateX(40px) rotate(180deg); }
+    100% { transform: translateY(105vh) translateX(-20px) rotate(360deg); }
+  }
+  @keyframes beat { 0%,100% { transform: scale(1); } 15% { transform: scale(1.14); } 30% { transform: scale(.97); } 45% { transform: scale(1.08); } }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ------------------------------------------------------------ header */
+  header {
+    display: flex; align-items: center; gap: 16px;
+    padding: 14px 20px; margin-bottom: 22px;
+    background: linear-gradient(120deg, rgba(199,8,56,.2), rgba(20,8,14,.88) 45%);
+    border: 1px solid var(--line2);
+    border-radius: var(--radius);
+    box-shadow: var(--glow), inset 0 1px 0 rgba(255,196,220,.06);
+    position: relative; overflow: hidden;
+  }
+  header::before {
+    content: "ずっと一緒だよ"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    font: 44px "Dela Gothic One"; color: rgba(255,79,154,.05); white-space: nowrap; pointer-events: none;
+  }
+  .logo {
+    width: 46px; height: 46px; flex: 0 0 auto; display: grid; place-items: center;
+    filter: drop-shadow(0 0 10px rgba(255,42,85,.7));
+    animation: beat 1.4s ease-in-out infinite;
+  }
+  .logo svg { width: 42px; height: 42px; }
+  h1 {
+    font: 21px "Dela Gothic One", sans-serif;
+    background: linear-gradient(90deg, var(--sakura), var(--pink) 60%, var(--blood2));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    line-height: 1.2;
+  }
+  h1 small { font: 700 11.5px "Zen Maru Gothic"; -webkit-text-fill-color: var(--mute); margin-left: 8px; letter-spacing: .08em; }
+  .sub { font-size: 12.5px; color: var(--dim); display: flex; align-items: center; gap: 7px; margin-top: 2px; }
+  .avatar {
+    width: 18px; height: 18px; border-radius: 50%;
+    display: none; place-items: center; font-size: 10px; font-weight: 900;
+    background: linear-gradient(135deg, var(--pink), var(--blood)); color: #fff;
+  }
+  .sub.connected .avatar { display: grid; }
+  .sub.connected { color: var(--sakura); font-weight: 700; }
+
+  .head-right { margin-left: auto; display: flex; align-items: center; gap: 10px; position: relative; }
+  .pill {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 14px 7px 11px; border-radius: 999px;
+    font-weight: 700; font-size: 12.5px; white-space: nowrap;
+    border: 1px dashed var(--line2); background: rgba(122,75,96,.14); color: var(--dim);
+    transition: all .3s;
+  }
+  .dot { font-size: 15px; line-height: 1; color: var(--mute); }
+  .dot::before { content: "♡"; }
+  #statusPill.on { background: rgba(199,8,56,.18); color: var(--sakura); border: 1px solid var(--blood2); box-shadow: 0 0 18px rgba(255,42,85,.35); }
+  #statusPill.on .dot { color: var(--blood2); animation: beat 1s ease-in-out infinite; }
+  #statusPill.on .dot::before { content: "♥"; }
+  .langbtn {
+    padding: 7px 11px; border-radius: 999px; font-size: 12px; letter-spacing: .05em;
+    background: var(--bg4); color: var(--sakura); border: 1px solid var(--line2); box-shadow: none;
+  }
+  .langbtn:hover:not(:disabled) { border-color: var(--pink); box-shadow: 0 0 14px rgba(255,79,154,.3); }
+  #connPill { display: none; border-color: var(--gold); color: var(--gold); background: rgba(255,181,71,.1); }
+  #connPill.show { display: flex; }
+
+  /* -------------------------------------------------------------- grid */
+  .grid { display: grid; grid-template-columns: minmax(0,1fr) 400px; gap: 22px; align-items: start; }
+  .col { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+  .sticky { position: sticky; top: 20px; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 1060px) { .grid { grid-template-columns: 1fr; } .sticky { position: static; } }
+  @media (max-width: 760px) { .split { grid-template-columns: 1fr; } header::before { display: none; } }
+  @media (max-width: 560px) { header { flex-wrap: wrap; } .head-right { margin-left: 0; width: 100%; } }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,196,220,.04);
+    transition: border-color .25s, box-shadow .25s;
+    min-width: 0;
+  }
+  .card:hover { border-color: var(--line2); }
+  .card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .card h2 {
+    font: 15px "Dela Gothic One", sans-serif; color: var(--sakura);
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .card h2::before { content: "♥"; color: var(--pink); font-size: 13px; }
+  .card h2 .jp { font: 700 11px "Zen Maru Gothic"; color: var(--mute); letter-spacing: .1em; }
+  .card-head .actions { margin-left: auto; display: flex; gap: 4px; align-items: center; }
+  .count {
+    font-size: 11px; font-weight: 900; color: #fff;
+    background: linear-gradient(135deg, var(--pink), var(--blood));
+    padding: 1px 9px; border-radius: 999px;
+  }
+
+  /* ------------------------------------------------------------ inputs */
+  input[type=text], input[type=password], select {
+    width: 100%; padding: 11px 14px;
+    background: rgba(11,5,8,.85); color: var(--txt);
+    border: 1px solid var(--line2); border-radius: 12px;
+    font: inherit; outline: none;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  input::placeholder { color: var(--mute); }
+  input:focus, select:focus { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(255,79,154,.18); }
+  select { appearance: none; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%23ff4f9a'%3E%3Cpath d='M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
+  }
+  select option { background: var(--bg2); }
+  :focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
+
+  .field { position: relative; flex: 1; min-width: 0; }
+  .field input { padding-right: 42px; }
+  .eye {
+    position: absolute; right: 5px; top: 50%; transform: translateY(-50%);
+    background: none !important; padding: 6px 8px !important; color: var(--mute); box-shadow: none !important;
+  }
+  .eye:hover { color: var(--pink); transform: translateY(-50%) !important; }
+  .eye svg { width: 17px; height: 17px; display: block; }
+
+  .row { display: flex; gap: 10px; align-items: center; }
+  .row > * { flex: 1; min-width: 0; }
+  .row > button, .row > .switch { flex: 0 0 auto; }
+
+  button, a.btn {
+    padding: 11px 18px; border: none; border-radius: 12px;
+    background: linear-gradient(135deg, var(--pink), #e0287a);
+    color: #fff; font: inherit; font-weight: 900; cursor: pointer; text-decoration: none;
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px; white-space: nowrap;
+    box-shadow: 0 4px 14px rgba(255,79,154,.28), inset 0 1px 0 rgba(255,255,255,.2);
+    transition: transform .1s, box-shadow .2s, filter .15s, opacity .2s;
+  }
+  button svg, a.btn svg { width: 15px; height: 15px; flex: 0 0 auto; }
+  button:hover:not(:disabled), a.btn:hover { filter: brightness(1.1); box-shadow: 0 6px 22px rgba(255,79,154,.45), inset 0 1px 0 rgba(255,255,255,.2); transform: translateY(-1px); }
+  button:active:not(:disabled) { transform: translateY(1px); }
+  button:disabled { opacity: .35; cursor: not-allowed; filter: grayscale(.5); box-shadow: none; }
+  .ghost { background: var(--bg4) !important; color: var(--sakura) !important; border: 1px solid var(--line2) !important; box-shadow: none !important; }
+  .danger { background: linear-gradient(135deg, var(--blood2), #8a0526); box-shadow: 0 4px 14px rgba(199,8,56,.35), inset 0 1px 0 rgba(255,255,255,.15); }
+  .ok { background: linear-gradient(135deg, var(--pink2), var(--pink)); }
+  .gold { background: linear-gradient(135deg, var(--gold), #ff7a3d); color: #1a0a10; box-shadow: 0 4px 14px rgba(255,181,71,.3); }
+  button.icon { padding: 7px; background: transparent; color: var(--mute); box-shadow: none; border-radius: 9px; }
+  button.icon:hover { background: var(--bg4); color: var(--pink); box-shadow: none; transform: none; }
+  button.icon.active { color: var(--pink); }
+  button.loading { pointer-events: none; opacity: .8; }
+  button.loading svg { display: none; }
+  button.loading::before { content: "♥"; animation: beat .7s infinite; }
+
+  .controls { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; margin-bottom: 14px; }
+
+  .switch {
+    display: flex; align-items: center; gap: 9px; cursor: pointer;
+    font-size: 12.5px; font-weight: 700; color: var(--mute); user-select: none; padding: 0 4px;
+  }
+  .switch input { position: absolute; opacity: 0; pointer-events: none; }
+  .switch .track {
+    width: 38px; height: 22px; border-radius: 999px; flex: 0 0 auto;
+    background: var(--bg4); border: 1px solid var(--line2); position: relative; transition: background .2s;
+  }
+  .switch .track::after {
+    content: "♡"; position: absolute; top: 1px; left: 2px;
+    width: 18px; height: 18px; display: grid; place-items: center;
+    font-size: 13px; color: var(--mute); transition: transform .2s, color .2s;
+  }
+  .switch input:checked + .track { background: rgba(255,181,71,.2); border-color: var(--gold); }
+  .switch input:checked + .track::after { transform: translateX(15px); content: "♥"; color: var(--gold); }
+  .switch input:checked ~ span { color: var(--gold); }
+  .switch input:focus-visible + .track { outline: 2px solid var(--pink); outline-offset: 2px; }
+
+  .hint { font-size: 12px; color: var(--dim); margin-top: 12px; line-height: 1.7; }
+  code {
+    font: 11px "DotGothic16", Consolas, monospace;
+    background: rgba(11,5,8,.85); border: 1px dashed var(--line2);
+    padding: 2px 7px; border-radius: 6px; color: var(--pink2);
+    cursor: pointer; transition: all .2s; word-break: break-all;
+  }
+  code:hover { border-color: var(--pink); border-style: solid; color: var(--sakura); }
+
+  /* ------------------------------------------------------------- stats */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 620px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat {
+    background: linear-gradient(160deg, color-mix(in srgb, var(--c) 15%, var(--bg2)), var(--bg2) 70%);
+    border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+    border-radius: 16px; padding: 16px;
+    position: relative; overflow: hidden; transition: transform .2s;
+  }
+  .stat:hover { transform: translateY(-2px); }
+  .stat::after {
+    content: attr(data-ico); position: absolute; right: -4px; bottom: -16px;
+    font-size: 62px; color: var(--c); opacity: .12; line-height: 1;
+  }
+  .stat b {
+    display: block; font: 28px "Dela Gothic One", sans-serif; line-height: 1.15;
+    color: var(--c); text-shadow: 0 0 16px color-mix(in srgb, var(--c) 50%, transparent);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat span { font-size: 11.5px; color: var(--dim); font-weight: 700; }
+  .stat b.bump { animation: bump .5s; }
+  @keyframes bump { 40% { transform: scale(1.2) rotate(-3deg); } }
+
+  /* ------------------------------------------------------------ claims */
+  .claim-card { border-color: rgba(255,181,71,.45); background: linear-gradient(135deg, rgba(255,181,71,.1), transparent 50%), var(--card-bg); animation: fadeIn .3s ease; }
+  .claim-card h2::before { content: "✦"; color: var(--gold); }
+  .claim-card[hidden] { display: none; }
+  .claim-txt { font-size: 12px; color: var(--dim); margin: -6px 0 12px; }
+  #claimList { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .claim-item {
+    display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%;
+    background: rgba(11,5,8,.6); border: 1px solid var(--line2);
+    padding: 5px 10px 5px 5px; border-radius: 10px; font-size: 12.5px; font-weight: 700;
+  }
+  .claim-item img { width: 24px; height: 24px; border-radius: 6px; object-fit: cover; }
+  .claim-item .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .claim-btns { flex-wrap: wrap; }
+  .claim-btns .btn { flex: 1 1 auto; }
+
+  /* ------------------------------------------------------------ quests */
+  .tabs { display: flex; gap: 4px; margin-left: auto; background: rgba(11,5,8,.7); padding: 3px; border-radius: 11px; border: 1px solid var(--line); flex-wrap: wrap; }
+  .tabs button {
+    padding: 5px 11px; border-radius: 8px; font-size: 12px; font-weight: 700;
+    background: transparent; color: var(--dim); box-shadow: none;
+  }
+  .tabs button:hover { background: var(--bg4); color: var(--sakura); transform: none; box-shadow: none; }
+  .tabs button.active { background: linear-gradient(135deg, var(--pink), #e0287a); color: #fff; }
+  .tabs button i { font-style: normal; opacity: .7; margin-left: 4px; font-size: 11px; }
+
+  #questList.quiet .quest { animation: none; }
+  .sync { font-size: 11px; color: var(--mute); font-weight: 700; }
+  .sync::before { content: "⟳ "; }
+  .sync:empty { display: none; }
+  #questList { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+  .quest {
+    background: rgba(11,5,8,.6); border: 1px solid var(--line);
+    border-radius: 16px; overflow: hidden;
+    transition: border-color .2s, transform .2s, box-shadow .2s;
+    animation: fadeIn .35s ease both;
+    display: flex; flex-direction: column;
+  }
+  .quest:hover { border-color: var(--pink); transform: translateY(-2px); box-shadow: var(--glow); }
+  .quest.claimed { opacity: .72; }
+  .quest.claimed:hover { opacity: 1; }
+  .quest.pending { border-color: rgba(255,181,71,.5); }
+
+  .qhero {
+    height: 86px; position: relative; flex: 0 0 auto;
+    background: linear-gradient(135deg, var(--bg4), var(--bg2)) center / cover no-repeat;
+  }
+  .qhero::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(11,5,8,.1) 0%, rgba(11,5,8,.55) 60%, rgba(11,5,8,.98) 100%),
+                linear-gradient(90deg, rgba(199,8,56,.25), transparent 60%);
+  }
+  .quest.claimed .qhero { filter: grayscale(.6); }
+  .qhero .kind { position: absolute; top: 10px; left: 10px; z-index: 1; }
+  .qhero .reward { position: absolute; top: 10px; right: 10px; z-index: 1; }
+  .stamp {
+    position: absolute; right: 14px; bottom: -6px; z-index: 2;
+    font: 13px "Dela Gothic One"; color: var(--blood2);
+    border: 2px solid var(--blood2); border-radius: 8px; padding: 1px 8px;
+    transform: rotate(-10deg); background: rgba(11,5,8,.7);
+    text-shadow: 0 0 8px rgba(255,42,85,.5);
+  }
+
+  .qbody { padding: 0 14px 14px; position: relative; flex: 1; display: flex; flex-direction: column; }
+  .qtop { display: flex; align-items: center; gap: 11px; margin: -22px 0 12px; position: relative; z-index: 1; }
+  .qtile {
+    width: 46px; height: 46px; border-radius: 12px; flex: 0 0 auto;
+    background: var(--bg4) center / cover no-repeat; border: 2px solid var(--bg2);
+    box-shadow: 0 4px 12px rgba(0,0,0,.5);
+    display: grid; place-items: center; color: var(--pink); font-size: 20px;
+  }
+  .qinfo { flex: 1; min-width: 0; padding-top: 18px; }
+  .qname { font-weight: 900; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .qsub { font-size: 11.5px; color: var(--mute); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .ring { width: 46px; height: 46px; flex: 0 0 auto; position: relative; margin-top: 18px; }
+  .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .ring circle { fill: none; stroke-width: 4; }
+  .ring .bg { stroke: var(--bg4); }
+  .ring .fg { stroke: url(#ringGrad); stroke-linecap: round; transition: stroke-dashoffset .6s cubic-bezier(.2,.8,.2,1); }
+  .ring b { position: absolute; inset: 0; display: grid; place-items: center; font: 11px "Dela Gothic One"; color: var(--sakura); }
+  .quest.claimed .ring b, .quest.pending .ring b { color: var(--pink); }
+
+  .qmeta { font-size: 11.5px; color: var(--dim); display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin-bottom: 10px; }
+  .qmeta .exp { color: var(--mute); }
+  .qmeta .exp.soon { color: var(--blood2); font-weight: 700; }
+
+  .badge, .kind, .reward {
+    font-size: 10.5px; font-weight: 900; padding: 2px 9px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
+  }
+  .badge { background: var(--bg4); color: var(--dim); }
+  .badge::before { content: "♡"; }
+  .badge.live { background: rgba(255,79,154,.15); color: var(--pink2); }
+  .badge.live::before { content: "♥"; animation: beat 1.2s infinite; display: inline-block; }
+  .badge.wait { background: rgba(255,181,71,.14); color: var(--gold); }
+  .badge.wait::before { content: "✦"; }
+  .badge.ok { background: rgba(199,8,56,.2); color: var(--blood2); }
+  .badge.ok::before { content: "♥"; }
+  .kind { background: rgba(11,5,8,.75); color: var(--pink2); border: 1px solid rgba(255,79,154,.35); backdrop-filter: blur(4px); }
+  .kind.play { color: var(--blood2); border-color: rgba(255,42,85,.4); }
+  .reward { background: rgba(11,5,8,.75); color: var(--gold); border: 1px solid rgba(255,181,71,.4); backdrop-filter: blur(4px); }
+
+  .tasks { margin-top: auto; }
+  .orhint { font-size: 10.5px; color: var(--mute); margin-bottom: 6px; font-weight: 700; letter-spacing: .03em; }
+  .task + .task { margin-top: 9px; }
+  .task.unsup { opacity: .42; }
+  .taskline { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11.5px; color: var(--dim); margin-bottom: 5px; }
+  .taskline span:first-child { color: var(--sakura); display: flex; align-items: center; gap: 6px; font-weight: 700; min-width: 0; }
+  .taskline span:last-child { font-family: "DotGothic16", monospace; flex: 0 0 auto; }
+  .tag { font-size: 10px; padding: 1px 7px; border-radius: 6px; background: var(--bg4); color: var(--dim); font-weight: 700; }
+  .tag.unsup { color: var(--gold); background: rgba(255,181,71,.1); }
+  .bar { height: 8px; background: rgba(255,79,154,.08); border: 1px solid var(--line); border-radius: 999px; position: relative; }
+  .bar > i {
+    display: block; height: 100%; width: 0; border-radius: inherit;
+    background: linear-gradient(90deg, var(--pink2), var(--pink) 60%, var(--blood2));
+    box-shadow: 0 0 10px rgba(255,79,154,.45);
+    transition: width .6s cubic-bezier(.2,.8,.2,1); position: relative;
+  }
+  .bar.live > i::after {
+    content: "♥"; position: absolute; right: -7px; top: 50%; transform: translateY(-52%);
+    font-size: 14px; color: var(--blood2); text-shadow: 0 0 6px var(--blood2); animation: beat 1.2s infinite;
+  }
+  .bar.done > i { background: linear-gradient(90deg, var(--blood), var(--blood2)); }
+
+  .empty {
+    grid-column: 1 / -1;
+    font-size: 13px; color: var(--dim); text-align: center; padding: 34px 0;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .empty .big { font-size: 36px; color: var(--pink); opacity: .5; animation: beat 2s infinite; }
+  .empty small { color: var(--mute); font-size: 11px; }
+  .skeleton {
+    height: 210px; border-radius: 16px;
+    background: linear-gradient(90deg, var(--bg3) 0%, var(--bg4) 50%, var(--bg3) 100%);
+    background-size: 200% 100%; animation: sk 1.2s infinite;
+  }
+  @keyframes sk { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+  /* ----------------------------------------------------------- console */
+  .console-card { display: flex; flex-direction: column; height: calc(100vh - 140px); min-height: 440px; }
+  @media (max-width: 1060px) { .console-card { height: 460px; } }
+  #console {
+    flex: 1; min-height: 0;
+    background: repeating-linear-gradient(0deg, rgba(255,79,154,.03) 0 1px, transparent 1px 3px), #070205;
+    border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 14px; overflow-y: auto;
+    font: 12.5px/1.7 "DotGothic16", "Cascadia Code", Consolas, monospace;
+    box-shadow: inset 0 0 30px rgba(199,8,56,.12);
+  }
+  #console div { white-space: pre-wrap; word-break: break-word; padding: 1px 0 1px 9px; border-left: 2px solid transparent; }
+  #console div:hover { background: rgba(255,79,154,.05); }
+  .l-info { color: var(--sakura); }
+  .l-ok { color: var(--pink2); border-left-color: var(--pink) !important; }
+  .l-ok::before { content: "♥ "; color: var(--pink); }
+  .l-warn { color: var(--gold); border-left-color: rgba(255,181,71,.6) !important; }
+  .l-error { color: var(--blood2); border-left-color: var(--blood) !important; background: rgba(199,8,56,.08); }
+  .l-debug { color: var(--mute); }
+  .ts { color: #6b3550; margin-right: 8px; }
+  .console-empty { color: var(--mute); }
+  #console.hide-debug .l-debug { display: none; }
+
+  /* ------------------------------------------------------------- toast */
+  #toasts { position: fixed; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 50; }
+  .toast {
+    background: var(--bg3); border: 1px solid var(--pink);
+    padding: 11px 16px; border-radius: 14px; font-size: 13px; font-weight: 700;
+    box-shadow: 0 10px 30px rgba(0,0,0,.5), var(--glow);
+    animation: pop .3s cubic-bezier(.2,1.4,.4,1); max-width: 340px;
+  }
+  .toast::before { content: "♥ "; color: var(--pink); }
+  .toast.error { border-color: var(--blood2); }
+  .toast.error::before { content: "✖ "; color: var(--blood2); }
+  .toast.out { opacity: 0; transform: translateX(14px) scale(.95); transition: all .25s; }
+  @keyframes pop { from { opacity: 0; transform: translateY(10px) scale(.9); } }
+
+  footer { text-align: center; margin-top: 30px; font-size: 11.5px; color: var(--mute); letter-spacing: .1em; }
+
+  @media (prefers-reduced-motion: reduce) { #petals { display: none; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8cc0"/><stop offset="1" stop-color="#ff2a55"/></linearGradient>
+  </defs>
+</svg>
+<div id="petals"></div>
+<div class="wrap">
+  <header>
+    <div class="logo">
+      <svg viewBox="0 0 48 48">
+        <defs>
+          <linearGradient id="hg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#ff8cc0"/><stop offset=".6" stop-color="#ff2a55"/><stop offset="1" stop-color="#8a0526"/>
+          </linearGradient>
+        </defs>
+        <path d="M24 42S6 31 6 18a9 9 0 0 1 18-3 9 9 0 0 1 18 3c0 13-18 24-18 24z" fill="url(#hg)"/>
+        <path d="M24 15l-3 7 4 3-3 7" fill="none" stroke="#0b0508" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M16 16a4 4 0 0 1 4-3" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Quest Manager<small>ずっと見てるよ</small></h1>
+      <div class="sub" id="userBox"><span class="avatar" id="avatar"></span><span id="userLabel"></span></div>
+    </div>
+    <div class="head-right">
+      <div class="pill" id="connPill" data-i18n="offline"></div>
+      <div class="pill" id="statusPill"><span class="dot"></span><span id="statusText"></span></div>
+      <button class="langbtn" id="langBtn" data-i18n-title="langTitle">EN</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="col">
+      <div class="split">
+        <div class="card">
+          <div class="card-head"><h2><span data-i18n="tokenTitle"></span> <span class="jp">ひみつ</span></h2></div>
+          <div class="row">
+            <div class="field">
+              <input type="password" id="tokenInput" data-i18n-ph="tokenPh" autocomplete="off" spellcheck="false" />
+              <button class="eye" id="toggleToken" type="button" data-i18n-title="toggleToken">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <button id="saveToken" data-i18n="validate"></button>
+          </div>
+          <div class="hint">
+            <span data-i18n="tokenHint"></span><br><code id="tokenSnippet" data-i18n-title="copyTitle">JSON.parse(localStorage.getItem("token"))</code>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2><span data-i18n="controls"></span> <span class="jp">そうさ</span></h2></div>
+          <div class="controls">
+            <button id="startBtn" class="ok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z"/></svg><span data-i18n="start"></span></button>
+            <button id="stopBtn" class="danger">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2.5 9 14l1 1-2 2-2-2-3.5 3.5 2 2L8 17l2 2 2-2 1 1L21.5 3.5z"/></svg><span data-i18n="stop"></span>
+            </button>
+            <button id="scanBtn" class="ghost" data-i18n-title="scanTitle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg><span data-i18n="scan"></span>
+            </button>
+          </div>
+          <div class="row">
+            <select id="interval" data-i18n-title="intervalTitle">
+              <option value="300000" data-i18n="every5"></option>
+              <option value="900000" data-i18n="every15" selected></option>
+              <option value="1800000" data-i18n="every30"></option>
+            </select>
+            <label class="switch" data-i18n-title="dryTitle">
+              <input type="checkbox" id="dryRun" /><span class="track"></span><span>dry-run</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat" style="--c: var(--pink)" data-ico="♡"><b id="sFound">0</b><span data-i18n="sFound"></span></div>
+        <div class="stat" style="--c: var(--pink2)" data-ico="✓"><b id="sDone">0</b><span data-i18n="sDone"></span></div>
+        <div class="stat" style="--c: var(--gold)" data-ico="✦"><b id="sClaim">0</b><span data-i18n="sClaim"></span></div>
+        <div class="stat" style="--c: var(--blood2)" data-ico="♥"><b id="sCredits">0</b><span data-i18n="sCredits"></span></div>
+      </div>
+
+      <div class="card claim-card" id="claimCard" hidden>
+        <div class="card-head">
+          <h2><span data-i18n="claimTitle"></span> <span class="jp">プレゼント</span></h2>
+          <span class="count" id="claimCount">0</span>
+        </div>
+        <p class="claim-txt" data-i18n="claimTxt"></p>
+        <div id="claimList"></div>
+        <div class="row claim-btns">
+          <a class="btn gold" href="discord://-/quest-home" data-i18n="openDiscord"></a>
+          <a class="btn ghost" href="https://discord.com/quest-home" target="_blank" rel="noopener" data-i18n="openWeb"></a>
+          <button class="ghost" id="claimRefresh" data-i18n-title="recheck">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2><span data-i18n="quests"></span> <span class="jp">ぜんぶ わたしの</span></h2>
+          <span class="count" id="questCount">0</span>
+          <span class="sync" id="syncLabel"></span>
+          <div class="tabs" id="tabs">
+            <button data-f="all" class="active"><span data-i18n="tabAll"></span><i id="fAll"></i></button>
+            <button data-f="todo"><span data-i18n="tabTodo"></span><i id="fTodo"></i></button>
+            <button data-f="pending"><span data-i18n="tabPending"></span><i id="fPending"></i></button>
+            <button data-f="claimed"><span data-i18n="tabClaimed"></span><i id="fClaimed"></i></button>
+          </div>
+        </div>
+        <div id="questList">
+          <div class="empty"><span class="big">♡</span><span data-i18n="emptyInit"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col sticky">
+      <div class="card console-card">
+        <div class="card-head">
+          <h2><span data-i18n="journal"></span> <span class="jp">にっき</span></h2>
+          <div class="actions">
+            <button class="icon" id="debugToggle" data-i18n-title="debugTitle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 2v3M16 2v3M3 10h18M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/></svg>
+            </button>
+            <button class="icon active" id="autoScroll" data-i18n-title="autoScrollTitle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+            </button>
+            <button class="icon" id="clearConsole" data-i18n-title="clearTitle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+            </button>
+          </div>
+        </div>
+        <div id="console" class="hide-debug"><div class="console-empty" data-i18n="consoleWait"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <footer data-i18n="footer"></footer>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+/* ---------------------------------------------------------------- i18n */
+const I18N = {
+  fr: {
+    langTitle: 'Switch to English', userNone: "personne… pour l'instant ♡", tokenSaved: 'token enregistré ♡',
+    offline: '✖ serveur hors ligne', statusOn: 'Je te surveille', statusOff: 'Endormie',
+    tokenTitle: 'Token', tokenPh: 'Donne-moi ton token… ♡', toggleToken: 'Afficher / masquer', validate: 'Valider',
+    tokenHint: 'F12 → Console → (clique pour copier)', copyTitle: 'Cliquer pour copier',
+    controls: 'Contrôles', start: 'Démarrer', stop: 'Arrêter', scan: 'Scan', scanTitle: 'Scanner maintenant',
+    intervalTitle: 'Intervalle de scan', every5: 'Je regarde toutes les 5 min', every15: 'Je regarde toutes les 15 min', every30: 'Je regarde toutes les 30 min',
+    dryTitle: 'Simule sans rien envoyer à Discord',
+    sFound: 'Quêtes actives', sDone: 'Terminées', sClaim: 'Récupérées', sCredits: 'Orbs gagnés',
+    claimTitle: 'À récupérer', claimTxt: 'Ces quêtes sont terminées ♡ Discord demande un captcha pour chaque récompense : clique « Récupérer » toi-même.',
+    openDiscord: '♥ Ouvrir dans Discord', openWeb: 'Version web', recheck: 'Revérifier après avoir récupéré',
+    quests: 'Quêtes', tabAll: 'Tout', tabTodo: 'À faire', tabPending: 'À récupérer', tabClaimed: 'Récupérées',
+    journal: 'Journal intime', debugTitle: 'Afficher les logs debug', autoScrollTitle: 'Défilement auto', clearTitle: 'Effacer les preuves',
+    consoleWait: "j'attends… je suis patiente ♡", consoleCleared: 'preuves effacées ♡', footer: "♡ tu ne m'échapperas pas ♡",
+    emptyInit: 'Aucune donnée. Lance un scan.', emptyNone: 'Aucune quête active…', emptyNoneSub: "tu ne vas pas m'abandonner, hein ?", emptyFilter: 'Rien ici…',
+    stClaimed: 'Récupérée', stPending: 'À récupérer', stLive: 'En cours', stIdle: 'Non inscrit',
+    kindVideo: '▶ Vidéo', kindPlay: '🎮 Jeu', stamp: '♥ à moi', orHint: 'une seule au choix ♡', unsupported: 'non supporté',
+    expDays: 'encore {n} jours', expTomorrow: 'expire demain', expHours: 'expire dans {n} h',
+    syncNow: 'à jour', syncSec: 'maj il y a {n}s', syncMin: 'maj il y a {n} min',
+    pasteFirst: "Colle ton token d'abord ♡", welcome: 'Te voilà enfin, {user}…', copied: 'Copié ♡', tokenOk: 'Token validé ({user})',
+    tokenBad: 'Token invalide', serverDown: 'Serveur injoignable', manualScan: 'Scan manuel…',
+    WATCH_VIDEO: 'Regarder la vidéo', WATCH_VIDEO_ON_MOBILE: 'Vidéo sur mobile', PLAY_ON_DESKTOP: 'Jouer sur PC', PLAY_ON_XBOX: 'Jouer sur Xbox',
+    PLAY_ON_PLAYSTATION: 'Jouer sur PlayStation', PLAY_ACTIVITY: 'Activité', STREAM_ON_DESKTOP: 'Streamer sur PC', ACHIEVEMENT_IN_ACTIVITY: 'Succès dans une activité',
+  },
+  en: {
+    langTitle: 'Passer en français', userNone: 'nobody… for now ♡', tokenSaved: 'token saved ♡',
+    offline: '✖ server offline', statusOn: "I'm watching you", statusOff: 'Asleep',
+    tokenTitle: 'Token', tokenPh: 'Give me your token… ♡', toggleToken: 'Show / hide', validate: 'Save',
+    tokenHint: 'F12 → Console → (click to copy)', copyTitle: 'Click to copy',
+    controls: 'Controls', start: 'Start', stop: 'Stop', scan: 'Scan', scanTitle: 'Scan now',
+    intervalTitle: 'Scan interval', every5: "I'll check every 5 min", every15: "I'll check every 15 min", every30: "I'll check every 30 min",
+    dryTitle: 'Simulate without sending anything to Discord',
+    sFound: 'Active quests', sDone: 'Completed', sClaim: 'Claimed', sCredits: 'Orbs earned',
+    claimTitle: 'To claim', claimTxt: 'These quests are done ♡ Discord asks for a captcha on every reward: click "Claim" yourself.',
+    openDiscord: '♥ Open in Discord', openWeb: 'Web version', recheck: 'Re-check after claiming',
+    quests: 'Quests', tabAll: 'All', tabTodo: 'To do', tabPending: 'To claim', tabClaimed: 'Claimed',
+    journal: 'Secret diary', debugTitle: 'Show debug logs', autoScrollTitle: 'Auto-scroll', clearTitle: 'Erase the evidence',
+    consoleWait: "waiting… I'm patient ♡", consoleCleared: 'evidence erased ♡', footer: "♡ you can't escape me ♡",
+    emptyInit: 'No data yet. Run a scan.', emptyNone: 'No active quests…', emptyNoneSub: "you're not leaving me, right?", emptyFilter: 'Nothing here…',
+    stClaimed: 'Claimed', stPending: 'To claim', stLive: 'In progress', stIdle: 'Not enrolled',
+    kindVideo: '▶ Video', kindPlay: '🎮 Game', stamp: '♥ mine', orHint: 'any one of these ♡', unsupported: 'unsupported',
+    expDays: '{n} days left', expTomorrow: 'ends tomorrow', expHours: 'ends in {n} h',
+    syncNow: 'up to date', syncSec: 'updated {n}s ago', syncMin: 'updated {n} min ago',
+    pasteFirst: 'Paste your token first ♡', welcome: 'There you are, {user}…', copied: 'Copied ♡', tokenOk: 'Token saved ({user})',
+    tokenBad: 'Invalid token', serverDown: 'Server unreachable', manualScan: 'Manual scan…',
+    WATCH_VIDEO: 'Watch the video', WATCH_VIDEO_ON_MOBILE: 'Video on mobile', PLAY_ON_DESKTOP: 'Play on PC', PLAY_ON_XBOX: 'Play on Xbox',
+    PLAY_ON_PLAYSTATION: 'Play on PlayStation', PLAY_ACTIVITY: 'Activity', STREAM_ON_DESKTOP: 'Stream on PC', ACHIEVEMENT_IN_ACTIVITY: 'Achievement in an activity',
+  },
+};
+const LOCALES = { fr: 'fr-FR', en: 'en-US' };
+
+function storedLang() {
+  try { const l = localStorage.getItem('lang'); if (I18N[l]) return l; } catch { /* stockage indisponible */ }
+  return (navigator.language || '').toLowerCase().startsWith('fr') ? 'fr' : 'en';
+}
+let lang = storedLang();
+
+function t(key, vars = {}) {
+  const tpl = I18N[lang][key] ?? I18N.fr[key] ?? key;
+  return tpl.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : ''));
+}
+
+function applyStatic() {
+  document.documentElement.lang = lang;
+  for (const el of document.querySelectorAll('[data-i18n]')) el.textContent = t(el.dataset.i18n);
+  for (const el of document.querySelectorAll('[data-i18n-ph]')) el.placeholder = t(el.dataset.i18nPh);
+  for (const el of document.querySelectorAll('[data-i18n-title]')) {
+    el.title = t(el.dataset.i18nTitle);
+    el.setAttribute('aria-label', el.title);
+  }
+  $('langBtn').textContent = lang === 'fr' ? 'EN' : 'FR';
+}
+
+function setLang(next) {
+  lang = next;
+  try { localStorage.setItem('lang', lang); } catch { /* stockage indisponible */ }
+  applyStatic();
+  setRunning(running);
+  setUser(currentUser);
+  renderQuests(questCache);
+  updateSyncLabel();
+  api('/api/lang', { lang });
+}
+
+/* -------------------------------------------------------------- petals */
+(() => {
+  const root = $('petals');
+  const glyphs = ['♥', '♡', '❀', '✿'];
+  for (let i = 0; i < 16; i++) {
+    const s = document.createElement('span');
+    s.textContent = glyphs[i % glyphs.length];
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.fontSize = 10 + Math.random() * 14 + 'px';
+    s.style.animationDuration = 14 + Math.random() * 16 + 's';
+    s.style.animationDelay = -Math.random() * 25 + 's';
+    s.style.opacity = .12 + Math.random() * .3;
+    root.appendChild(s);
+  }
+})();
+
+/* ------------------------------------------------------------- console */
+let autoScroll = true;
+
+function consolePlaceholder(key) {
+  $('console').innerHTML = `<div class="console-empty" data-i18n="${key}">${escapeHtml(t(key))}</div>`;
+}
+
+function appendLog(entry) {
+  const c = $('console');
+  const placeholder = c.querySelector('.console-empty');
+  if (placeholder) placeholder.remove();
+  const el = document.createElement('div');
+  el.className = 'l-' + (entry.level || 'info');
+  const time = new Date(entry.at || Date.now()).toLocaleTimeString(LOCALES[lang]);
+  el.innerHTML = `<span class="ts">${time}</span>${escapeHtml(entry.msg)}`;
+  c.appendChild(el);
+  if (autoScroll) c.scrollTop = c.scrollHeight;
+  while (c.children.length > 500) c.removeChild(c.firstChild);
+}
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+}
+function safeUrl(u) {
+  return typeof u === 'string' && /^https:\/\/cdn\.discordapp\.com\/[\w/.-]+$/.test(u) ? u : null;
+}
+
+function toast(msg, level = 'info') {
+  const el = document.createElement('div');
+  el.className = 'toast ' + level;
+  el.textContent = msg;
+  $('toasts').appendChild(el);
+  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 250); }, 3200);
+}
+
+/* ----------------------------------------------------------------- SSE */
+const es = new EventSource('/api/logs');
+let wasOffline = false;
+es.onopen = () => {
+  $('connPill').classList.remove('show');
+  // le serveur rejoue tout son historique à chaque connexion : on repart d'une console vide
+  consolePlaceholder('consoleWait');
+  if (wasOffline) { wasOffline = false; init(); }
+};
+es.onerror = () => { $('connPill').classList.add('show'); wasOffline = true; setRunning(false); };
+es.addEventListener('log', (e) => appendLog(JSON.parse(e.data)));
+es.addEventListener('quests', (e) => renderQuests(JSON.parse(e.data)));
+es.addEventListener('stats', (e) => renderStats(JSON.parse(e.data)));
+es.addEventListener('progress', (e) => applyProgress(JSON.parse(e.data)));
+es.addEventListener('state', (e) => setRunning(JSON.parse(e.data).running));
+
+/* -------------------------------------------------------------- render */
+let questCache = [];
+let filter = 'all';
+let running = false;
+let currentUser = { name: null, saved: false };
+const RING_C = 2 * Math.PI * 19;
+
+function setStat(id, value) {
+  const el = $(id);
+  const v = Number(value || 0).toLocaleString(LOCALES[lang]);
+  if (el.textContent !== v) {
+    el.textContent = v;
+    el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump');
+  }
+}
+
+function renderStats(s) {
+  setStat('sFound', s.found);
+  setStat('sDone', s.completed);
+  setStat('sClaim', s.claimed);
+  setStat('sCredits', s.credits);
+}
+
+function questState(q) {
+  if (q.claimed) return 'claimed';
+  if (q.completed) return 'pending';
+  return 'todo';
+}
+
+function questStatus(q) {
+  if (q.claimed) return ['ok', t('stClaimed')];
+  if (q.completed) return ['wait', t('stPending')];
+  if (q.enrolled) return ['live', t('stLive')];
+  return ['', t('stIdle')];
+}
+
+function expiryLabel(iso) {
+  const ms = new Date(iso) - Date.now();
+  const d = Math.floor(ms / 86400000);
+  if (d >= 2) return [t('expDays', { n: d }), false];
+  const h = Math.max(0, Math.floor(ms / 3600000));
+  return [h >= 24 ? t('expTomorrow') : t('expHours', { n: h }), true];
+}
+
+function taskPct(task) {
+  return task.target ? Math.min(100, (task.progress / task.target) * 100) : 0;
+}
+
+function renderClaims(list) {
+  const pending = list.filter((q) => q.completed && !q.claimed);
+  $('claimCard').hidden = !pending.length;
+  $('claimCount').textContent = pending.length;
+  $('claimList').innerHTML = pending.map((q) => {
+    const tile = safeUrl(q.tile);
+    return `
+    <div class="claim-item" title="${escapeHtml(q.subtitle || q.name)}">
+      ${tile ? `<img src="${tile}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ''}
+      <span class="nm">${escapeHtml(q.name)}</span>
+      ${q.reward ? '<span class="reward">✦ ' + escapeHtml(q.reward) + '</span>' : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderTabs(list) {
+  const n = (s) => list.filter((q) => questState(q) === s).length;
+  $('fAll').textContent = list.length;
+  $('fTodo').textContent = n('todo');
+  $('fPending').textContent = n('pending');
+  $('fClaimed').textContent = n('claimed');
+}
+
+function questCard(q) {
+  const state = questState(q);
+  const div = document.createElement('div');
+  div.className = 'quest ' + state;
+  div.dataset.id = q.id;
+  div.dataset.join = q.joinOp || 'and';
+  div.dataset.completed = q.completed ? '1' : '';
+
+  // en mode "or" on n'affiche que les tâches faisables (ou celle qui a validé la quête)
+  let shown = q.tasks;
+  if (q.joinOp === 'or') {
+    const useful = q.tasks.filter((task) => task.supported || task.progress > 0);
+    if (useful.length) shown = useful;
+  }
+  const live = q.enrolled && !q.completed;
+
+  const tasks = shown.map((task) => {
+    const done = task.target && task.progress >= task.target;
+    return `
+      <div class="task${task.supported || done ? '' : ' unsup'}">
+        <div class="taskline">
+          <span>${escapeHtml(t(task.type))}${task.supported ? '' : `<span class="tag unsup">${t('unsupported')}</span>`}</span>
+          <span>${Math.round(task.progress)} / ${task.target || '?'}</span>
+        </div>
+        <div class="bar${done ? ' done' : live && task.supported ? ' live' : ''}" data-task="${escapeHtml(task.type)}" data-target="${task.target || 0}" data-value="${task.progress || 0}">
+          <i style="width:${taskPct(task)}%"></i>
+        </div>
+      </div>`;
+  }).join('');
+
+  const [cls, label] = questStatus(q);
+  const hero = safeUrl(q.hero);
+  const tile = safeUrl(q.tile);
+  const [expTxt, soon] = q.expires ? expiryLabel(q.expires) : ['', false];
+
+  div.innerHTML = `
+    <div class="qhero"${hero ? ` style="background-image:url('${hero}')"` : ''}>
+      <span class="kind ${q.kind === 'video' ? 'video' : 'play'}">${q.kind === 'video' ? t('kindVideo') : t('kindPlay')}</span>
+      ${q.reward ? '<span class="reward">✦ ' + escapeHtml(q.reward) + '</span>' : ''}
+      ${q.claimed ? `<span class="stamp">${t('stamp')}</span>` : ''}
+    </div>
+    <div class="qbody">
+      <div class="qtop">
+        <div class="qtile"${tile ? ` style="background-image:url('${tile}')"` : ''}>${tile ? '' : '♡'}</div>
+        <div class="qinfo">
+          <div class="qname" title="${escapeHtml(q.name)}">${escapeHtml(q.name)}</div>
+          <div class="qsub">${q.subtitle && q.subtitle !== q.name ? escapeHtml(q.subtitle) : '&nbsp;'}</div>
+        </div>
+        <div class="ring">
+          <svg viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="19"/><circle class="fg" cx="23" cy="23" r="19" stroke-dasharray="${RING_C}" stroke-dashoffset="${RING_C}"/></svg>
+          <b>0%</b>
+        </div>
+      </div>
+      <div class="qmeta">
+        <span class="badge ${cls}">${label}</span>
+        ${expTxt && !q.claimed ? `<span class="exp${soon ? ' soon' : ''}">⏳ ${expTxt}</span>` : ''}
+      </div>
+      <div class="tasks">
+        ${q.joinOp === 'or' && shown.length > 1 ? `<div class="orhint">${t('orHint')}</div>` : ''}
+        ${tasks}
+      </div>
+    </div>`;
+  updateQuestPct(div);
+  return div;
+}
+
+function renderQuests(list) {
+  questCache = list;
+  renderClaims(list);
+  renderTabs(list);
+  $('questCount').textContent = list.length;
+  const root = $('questList');
+  if (!list.length && !lastSync) return; // pas encore scanné : on garde le message initial
+
+  const order = { todo: 0, pending: 1, claimed: 2 };
+  const visible = list
+    .filter((q) => filter === 'all' || questState(q) === filter)
+    .sort((a, b) => order[questState(a)] - order[questState(b)] || (b.enrolled - a.enrolled));
+
+  if (!visible.length) {
+    root.innerHTML = list.length
+      ? `<div class="empty"><span class="big">♡</span>${t('emptyFilter')}</div>`
+      : `<div class="empty"><span class="big">♡</span>${t('emptyNone')}<small>${t('emptyNoneSub')}</small></div>`;
+    return;
+  }
+  root.innerHTML = '';
+  visible.forEach((q, i) => {
+    const card = questCard(q);
+    card.style.animationDelay = Math.min(i, 12) * 30 + 'ms';
+    root.appendChild(card);
+  });
+}
+
+function updateQuestPct(card) {
+  const bars = [...card.querySelectorAll('.bar')];
+  const pcts = bars.map((b) => {
+    const target = Number(b.dataset.target);
+    return target ? Math.min(100, (Number(b.dataset.value) / target) * 100) : 0;
+  });
+  let pct = card.dataset.join === 'or'
+    ? Math.max(0, ...pcts)
+    : pcts.reduce((a, b) => a + b, 0) / (pcts.length || 1);
+  if (card.dataset.completed) pct = 100;
+  // 99,6 % ne doit pas s'afficher "100 %" tant que Discord n'a pas validé
+  const shown = pct >= 100 ? 100 : Math.min(99, Math.round(pct));
+  card.querySelector('.ring b').textContent = shown + '%';
+  card.querySelector('.ring .fg').style.strokeDashoffset = RING_C * (1 - pct / 100);
+}
+
+function applyProgress({ id, type, value, target }) {
+  const q = document.querySelector(`.quest[data-id="${CSS.escape(id)}"]`);
+  if (!q) return;
+  const bar = [...q.querySelectorAll('.bar')].find((b) => b.dataset.task === type);
+  if (!bar) return;
+  bar.dataset.value = value;
+  bar.dataset.target = target;
+  bar.querySelector('i').style.width = Math.min(100, (value / target) * 100) + '%';
+  const line = bar.previousElementSibling.querySelector('span:last-child');
+  if (line) line.textContent = `${Math.round(value)} / ${target}`;
+  if (value >= target) { bar.classList.add('done'); bar.classList.remove('live'); }
+  else bar.classList.add('live');
+  updateQuestPct(q);
+}
+
+function setRunning(on) {
+  running = on;
+  $('statusPill').classList.toggle('on', on);
+  $('statusText').textContent = on ? t('statusOn') : t('statusOff');
+  $('startBtn').disabled = on;
+  $('stopBtn').disabled = !on;
+}
+
+function setUser(u) {
+  currentUser = u;
+  $('userLabel').textContent = u.name ? u.name + ' ♡' : u.saved ? t('tokenSaved') : t('userNone');
+  $('userBox').classList.toggle('connected', Boolean(u.name));
+  $('avatar').textContent = u.name ? u.name[0].toUpperCase() : '';
+}
+
+/* ------------------------------------------------------------- actions */
+async function api(path, body) {
+  try {
+    const r = await fetch(path, {
+      method: body === undefined ? 'GET' : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: body === undefined ? undefined : JSON.stringify(body),
+    });
+    return await r.json().catch(() => ({}));
+  } catch {
+    return { error: t('serverDown') };
+  }
+}
+
+async function withLoading(btn, fn) {
+  btn.classList.add('loading');
+  try { return await fn(); } finally { btn.classList.remove('loading'); }
+}
+
+let lastSync = 0;
+
+async function scan(silent = false) {
+  if (!silent) $('questList').innerHTML = '<div class="skeleton"></div><div class="skeleton"></div>';
+  const res = await api('/api/scan', {});
+  if (res.quests) {
+    lastSync = Date.now();
+    $('questList').classList.toggle('quiet', silent);
+    renderQuests(res.quests);
+    updateSyncLabel();
+  } else if (!silent) {
+    renderQuests(questCache);
+    if (res.error) toast(res.error, 'error');
+  }
+  return res;
+}
+
+function updateSyncLabel() {
+  if (!lastSync) return;
+  const s = Math.round((Date.now() - lastSync) / 1000);
+  $('syncLabel').textContent = s < 10 ? t('syncNow') : s < 60 ? t('syncSec', { n: s }) : t('syncMin', { n: Math.floor(s / 60) });
+}
+
+// relit la vraie progression chez Discord toutes les 60 s (onglet visible uniquement)
+setInterval(() => {
+  if (document.visibilityState === 'visible' && lastSync && Date.now() - lastSync >= 60000) scan(true);
+  updateSyncLabel();
+}, 5000);
+
+$('saveToken').onclick = () => withLoading($('saveToken'), async () => {
+  const token = $('tokenInput').value.trim();
+  if (!token) return toast(t('pasteFirst'), 'error');
+  const res = await api('/api/token', { token });
+  if (res.ok) {
+    setUser({ name: res.user, saved: true });
+    $('tokenInput').value = '';
+    appendLog({ level: 'ok', msg: t('tokenOk', { user: res.user }), at: Date.now() });
+    toast(t('welcome', { user: res.user }), 'ok');
+    scan();
+  } else {
+    appendLog({ level: 'error', msg: res.error || t('tokenBad'), at: Date.now() });
+    toast(res.error || t('tokenBad'), 'error');
+  }
+});
+$('tokenInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('saveToken').click(); });
+
+$('toggleToken').onclick = () => {
+  const i = $('tokenInput');
+  i.type = i.type === 'password' ? 'text' : 'password';
+};
+
+$('tokenSnippet').onclick = async () => {
+  try {
+    await navigator.clipboard.writeText($('tokenSnippet').textContent);
+    toast(t('copied'), 'ok');
+  } catch { /* clipboard indisponible */ }
+};
+
+$('startBtn').onclick = () => withLoading($('startBtn'), async () => {
+  const res = await api('/api/start', {
+    dryRun: $('dryRun').checked,
+    intervalMs: Number($('interval').value),
+    lang,
+  });
+  if (res.error) {
+    appendLog({ level: 'error', msg: res.error, at: Date.now() });
+    toast(res.error, 'error');
+  } else setRunning(true);
+});
+
+$('stopBtn').onclick = () => withLoading($('stopBtn'), () => api('/api/stop', {}));
+$('scanBtn').onclick = () => withLoading($('scanBtn'), async () => {
+  appendLog({ level: 'info', msg: t('manualScan'), at: Date.now() });
+  await scan();
+});
+$('claimRefresh').onclick = () => withLoading($('claimRefresh'), () => scan());
+$('langBtn').onclick = () => setLang(lang === 'fr' ? 'en' : 'fr');
+
+$('tabs').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-f]');
+  if (!b) return;
+  filter = b.dataset.f;
+  for (const x of $('tabs').children) x.classList.toggle('active', x === b);
+  renderQuests(questCache);
+});
+
+$('debugToggle').onclick = () => {
+  const hidden = $('console').classList.toggle('hide-debug');
+  $('debugToggle').classList.toggle('active', !hidden);
+};
+$('autoScroll').onclick = () => {
+  autoScroll = !autoScroll;
+  $('autoScroll').classList.toggle('active', autoScroll);
+  if (autoScroll) $('console').scrollTop = $('console').scrollHeight;
+};
+$('clearConsole').onclick = () => consolePlaceholder('consoleCleared');
+
+/* --------------------------------------------------------------- init */
+async function init() {
+  api('/api/lang', { lang });
+  const st = await api('/api/state');
+  if (st.error) return;
+  setRunning(st.running);
+  renderStats(st.stats);
+  setUser({ name: st.user, saved: st.hasToken });
+  if (st.hasToken) await scan();
+}
+
+applyStatic();
+setRunning(false);
+setUser(currentUser);
+init();
+</script>
+</body>
+</html>

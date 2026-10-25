@@ -1,0 +1,11 @@
+# Dépendances
+node_modules/
+
+# Données sensibles : contient ton token Discord
+config.json
+
+# Divers
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
